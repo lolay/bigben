@@ -10,6 +10,7 @@
 
 @property (nonatomic, retain) NSString* name;
 @property (nonatomic) UInt64 startTime;
+@property (nonatomic) UInt64 incrementTime;
 @property (nonatomic, retain) LolayTimerMeasurement* measurement;
 
 @end
@@ -31,6 +32,7 @@ static Float64 wavelength;
 		self.name = inName;
 		self.measurement = nil;
 		self.startTime = 0;
+		self.incrementTime = 0;
 	}
 	
 	return self;
@@ -44,7 +46,9 @@ static Float64 wavelength;
 }
 
 - (void) start {
-	self.startTime = mach_absolute_time();
+	UInt64 time = mach_absolute_time();
+	self.startTime = time;
+	self.incrementTime = time;
 	self.measurement = nil;
 }
 
@@ -55,6 +59,7 @@ static Float64 wavelength;
 	UInt64 stopTime = mach_absolute_time();
 	self.measurement = [[[LolayTimerMeasurement alloc] initWithValues:self.name withStartTime:self.startTime withStopTime:stopTime] autorelease];
 	self.startTime = 0;
+	self.incrementTime = 0;
 }
 
 - (LolayTimerMeasurement*) elapsed {
@@ -65,6 +70,15 @@ static Float64 wavelength;
 	return [[[LolayTimerMeasurement alloc] initWithValues:self.name withStartTime:self.startTime withStopTime:stopTime] autorelease];
 }
 
+- (LolayTimerMeasurement*) increment {
+	if (self.incrementTime == 0) {
+		return nil;
+	}
+	UInt64 stopTime = mach_absolute_time();
+	LolayTimerMeasurement* increment = [[LolayTimerMeasurement alloc] initWithValues:self.name withStartTime:self.incrementTime withStopTime:stopTime];
+	self.incrementTime = stopTime;
+	return [increment autorelease];
+}
 - (NSNumber*) nanoseconds {
 	return [self.measurement nanoseconds];
 }
@@ -78,7 +92,7 @@ static Float64 wavelength;
 }
 
 - (NSString*) description {
-	return [NSString stringWithFormat:@"<LolayTimer name=%@, startTime=%f, measurement=%@>", self.name, self.startTime, self.measurement];
+	return [NSString stringWithFormat:@"<LolayTimer name=%@, startTime=%ui, incrementTime=%ui, measurement=%@>", self.name, self.startTime, self.incrementTime, self.measurement];
 }
 
 @end

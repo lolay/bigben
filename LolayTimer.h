@@ -15,6 +15,7 @@
 - (void) start;
 - (void) stop;
 - (LolayTimerMeasurement*) elapsed;
+- (LolayTimerMeasurement*) increment;
 
 - (NSNumber*) nanoseconds;
 - (NSNumber*) milliseconds;

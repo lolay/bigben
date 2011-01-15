@@ -30,15 +30,19 @@
 - (void) testNils {
 	LolayTimer* timer = [[LolayTimer alloc] initWithName:@"testNils"];
 	
-	STAssertTrue([timer seconds] == nil, @"Not started, expected no result");
-	STAssertTrue([timer milliseconds] == nil, @"Not started, expected no result");
-	STAssertTrue([timer nanoseconds] == nil, @"Not started, expected no result");
+	STAssertNil([timer seconds], @"Not started, expected no result");
+	STAssertNil([timer milliseconds], @"Not started, expected no result");
+	STAssertNil([timer nanoseconds], @"Not started, expected no result");
+	STAssertNil([timer elapsed], @"Not started, expected no result");
+	STAssertNil([timer increment], @"Not started, expected no result");
 	
 	[timer start];
 	
-	STAssertTrue([timer seconds] == nil, @"Not stopped, expected no result");
-	STAssertTrue([timer milliseconds] == nil, @"Not stopped, expected no result");
-	STAssertTrue([timer nanoseconds] == nil, @"Not stopped, expected no result");
+	STAssertNil([timer seconds], @"Not stopped, expected no result");
+	STAssertNil([timer milliseconds], @"Not stopped, expected no result");
+	STAssertNil([timer nanoseconds], @"Not stopped, expected no result");
+	STAssertNotNil([timer elapsed], @"Started, expected a result");
+	STAssertNotNil([timer increment], @"Started, expected a result");
 	
 	[timer release];
 }
@@ -75,6 +79,47 @@
 	
 	[timer stop];
 
+	STAssertTrue([[timer seconds] unsignedIntegerValue] == 3, @"The timer was not 3 seconds");
+	STAssertTrue([[timer milliseconds] unsignedIntegerValue] > 2990 && [[timer milliseconds] unsignedIntegerValue] < 3010,
+				 @"The timer was not 3,000 milliseconds");
+	STAssertTrue([[timer nanoseconds] unsignedIntegerValue] > 2990000000 && [[timer nanoseconds] unsignedIntegerValue] < 3010000000,
+				 @"The timer was not 3,000,000,000 nanoseconds");
+	
+	[timer release];
+}
+
+- (void) testIncrement {
+	LolayTimer* timer = [[LolayTimer alloc] initWithName:@"testIncrement"];
+	[timer start];
+	
+	[NSThread sleepForTimeInterval:1];
+	
+	LolayTimerMeasurement* increment = [[timer increment] retain];
+	
+	STAssertTrue([[increment seconds] unsignedIntegerValue] == 1, @"The timer was not 1 second");
+	STAssertTrue([[increment milliseconds] unsignedIntegerValue] > 990 && [[increment milliseconds] unsignedIntegerValue] < 1010,
+				 @"The timer was not 1,000 milliseconds");
+	STAssertTrue([[increment nanoseconds] unsignedIntegerValue] > 990000000 && [[increment nanoseconds] unsignedIntegerValue] < 1010000000,
+				 @"The timer was not 1,000,000,000 nanoseconds");
+	
+	[increment release];
+	
+	[NSThread sleepForTimeInterval:1];
+	
+	increment = [[timer increment] retain];
+	
+	STAssertTrue([[increment seconds] unsignedIntegerValue] == 1, @"The timer was not 1 seconds");
+	STAssertTrue([[increment milliseconds] unsignedIntegerValue] > 990 && [[increment milliseconds] unsignedIntegerValue] < 1010,
+				 @"The timer was not 1,000 milliseconds");
+	STAssertTrue([[increment nanoseconds] unsignedIntegerValue] > 990000000 && [[increment nanoseconds] unsignedIntegerValue] < 1010000000,
+				 @"The timer was not 1,000,000,000 nanoseconds");
+	
+	[increment release];
+	
+	[NSThread sleepForTimeInterval:1];
+	
+	[timer stop];
+	
 	STAssertTrue([[timer seconds] unsignedIntegerValue] == 3, @"The timer was not 3 seconds");
 	STAssertTrue([[timer milliseconds] unsignedIntegerValue] > 2990 && [[timer milliseconds] unsignedIntegerValue] < 3010,
 				 @"The timer was not 3,000 milliseconds");
