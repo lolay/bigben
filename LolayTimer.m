@@ -4,12 +4,13 @@
 //
 #import <mach/mach_time.h>
 #import "LolayTimer.h"
+#import "LolayTimerMeasurement.h"
 
 @interface LolayTimer ()
 
-@property (nonatomic) NSString* name;
+@property (nonatomic, retain) NSString* name;
 @property (nonatomic) UInt64 startTime;
-@property (nonatomic) UInt64 stopTime;
+@property (nonatomic, retain) LolayTimerMeasurement* measurement;
 
 @end
 
@@ -28,6 +29,8 @@ static Float64 wavelength;
 	
 	if (self) {
 		self.name = inName;
+		self.measurement = nil;
+		self.startTime = 0;
 	}
 	
 	return self;
@@ -35,42 +38,47 @@ static Float64 wavelength;
 
 - (void) dealloc {
 	self.name = nil;
+	self.measurement = nil;
 	
 	[super dealloc];
 }
 
 - (void) start {
 	self.startTime = mach_absolute_time();
-	self.stopTime = 0;
+	self.measurement = nil;
 }
 
 - (void) stop {
-	self.stopTime = mach_absolute_time();
+	if (self.startTime == 0) {
+		return;
+	}
+	UInt64 stopTime = mach_absolute_time();
+	self.measurement = [[[LolayTimerMeasurement alloc] initWithValues:self.name withStartTime:self.startTime withStopTime:stopTime] autorelease];
+	self.startTime = 0;
+}
+
+- (LolayTimerMeasurement*) elapsed {
+	if (self.startTime == 0) {
+		return nil;
+	}
+	UInt64 stopTime = mach_absolute_time();
+	return [[[LolayTimerMeasurement alloc] initWithValues:self.name withStartTime:self.startTime withStopTime:stopTime] autorelease];
 }
 
 - (NSNumber*) nanoseconds {
-	if (self.stopTime <= self.startTime) {
-		return nil;
-	}
-	return [NSNumber numberWithFloat:((Float64)(self.stopTime - self.startTime)) * wavelength];
+	return [self.measurement nanoseconds];
 }
 
 - (NSNumber*) milliseconds {
-	if (self.stopTime <= self.startTime) {
-		return nil;
-	}
-	return [NSNumber numberWithFloat:((Float64)(self.stopTime - self.startTime)) * wavelength / 1000000.0];
+	return [self.measurement milliseconds];
 }
 
 - (NSNumber*) seconds {
-	if (self.stopTime <= self.startTime) {
-		return nil;
-	}
-	return [NSNumber numberWithFloat:((Float64)(self.stopTime - self.startTime)) * wavelength / 1000000000.0];
+	return [self.measurement seconds];
 }
 
 - (NSString*) description {
-	return [NSString stringWithFormat:@"<LolayTimer name=%@, startTime=%f, stopTime=%f, nanoseconds=%@>", self.name, self.startTime, self.stopTime, [self nanoseconds]];
+	return [NSString stringWithFormat:@"<LolayTimer name=%@, startTime=%f, measurement=%@>", self.name, self.startTime, self.measurement];
 }
 
 @end

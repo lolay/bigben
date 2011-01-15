@@ -4,17 +4,11 @@
 //
 #import <Foundation/Foundation.h>
 
-@class LolayTimerMeasurement;
-
-@interface LolayTimer : NSObject
+@interface LolayTimerMeasurement : NSObject
 
 @property (nonatomic, retain, readonly) NSString* name;
 
-- (id) initWithName:(NSString*) inName;
-
-- (void) start;
-- (void) stop;
-- (LolayTimerMeasurement*) elapsed;
+- (id) initWithValues:(NSString*) inName withStartTime:(UInt64) inStartTime withStopTime:(UInt64) inStopTime;
 
 - (NSNumber*) nanoseconds;
 - (NSNumber*) milliseconds;
