@@ -9,6 +9,7 @@
 @interface LolayTimer : NSObject
 
 @property (nonatomic, retain, readonly) NSString* name;
+@property (nonatomic, retain, readwrite) NSMutableArray* measurements;
 
 - (id) initWithName:(NSString*) inName;
 
@@ -16,6 +17,7 @@
 - (void) stop;
 - (LolayTimerMeasurement*) elapsed;
 - (LolayTimerMeasurement*) increment;
+- (LolayTimerMeasurement*) increment:(NSString*) incrementName;
 
 - (NSNumber*) nanoseconds;
 - (NSNumber*) milliseconds;

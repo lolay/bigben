@@ -54,7 +54,7 @@ static Float64 wavelength;
 }
 
 - (NSString*) description {
-	return [NSString stringWithFormat:@"<LolayTimerMeasurement name=%@, startTime=%f, stopTime=%f, nanoseconds=%@>", self.name, self.startTime, self.stopTime, [self nanoseconds]];
+	return [NSString stringWithFormat:@"<LolayTimerMeasurement name=%@, startTime=%qu, stopTime=%qu, milliseconds=%@>", self.name, self.startTime, self.stopTime, [self milliseconds]];
 }
 
 @end
