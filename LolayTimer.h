@@ -9,7 +9,7 @@
 @interface LolayTimer : NSObject
 
 @property (nonatomic, retain, readonly) NSString* name;
-@property (nonatomic, retain, readwrite) NSMutableArray* measurements;
+@property (nonatomic, retain, readonly) NSArray* measurements;
 
 - (id) initWithName:(NSString*) inName;
 

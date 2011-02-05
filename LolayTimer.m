@@ -11,7 +11,7 @@
 @property (nonatomic, retain) NSString* name;
 @property (nonatomic) UInt64 startTime;
 @property (nonatomic) UInt64 incrementTime;
-//@property (nonatomic, retain, readwrite) NSMutableArray* measurements;
+@property (nonatomic, retain, readwrite) NSMutableArray* measurements;
 
 @end
 
