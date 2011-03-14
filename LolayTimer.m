@@ -17,6 +17,11 @@
 
 @implementation LolayTimer
 
+@synthesize name;
+@synthesize startTime;
+@synthesize incrementTime;
+@synthesize measurements;
+
 static Float64 wavelength;
 
 + (void) initialize {

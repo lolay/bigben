@@ -15,6 +15,10 @@
 
 @implementation LolayTimerMeasurement
 
+@synthesize name;
+@synthesize startTime;
+@synthesize stopTime;
+
 static Float64 wavelength;
 
 + (void) initialize {
