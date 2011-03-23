@@ -17,10 +17,10 @@
 
 @implementation LolayTimer
 
-@synthesize name;
-@synthesize startTime;
-@synthesize incrementTime;
-@synthesize measurements;
+@synthesize name = name_;
+@synthesize startTime = startTime_;
+@synthesize incrementTime = incrementTime_;
+@synthesize measurements = measurements_;
 
 static Float64 wavelength;
 

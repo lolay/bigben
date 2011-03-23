@@ -15,9 +15,9 @@
 
 @implementation LolayTimerMeasurement
 
-@synthesize name;
-@synthesize startTime;
-@synthesize stopTime;
+@synthesize name = name_;
+@synthesize startTime = startTime_;
+@synthesize stopTime = stopTime_;
 
 static Float64 wavelength;
 
