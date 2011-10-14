@@ -39,12 +39,6 @@ static Float64 wavelength;
 	return self;
 }
 
-- (void) dealloc {
-	self.name = nil;
-
-	[super dealloc];
-}
-
 - (NSNumber*) nanoseconds {
 	return [NSNumber numberWithFloat:((Float64)(self.stopTime - self.startTime)) * wavelength];
 }
